@@ -140,6 +140,7 @@ public:
 	void getSchedStack(unsigned &StackSeg, unsigned &StackPtr);
 	void handleTimers();
 	void taskEnd();
+	//void redeclare();
 };
 //=======================
 /**********    Functions    **********/
@@ -151,6 +152,7 @@ void scheduler();
 void myTaskEnd();
 	// 'short term' scheduler algorithms 
 int roundRobin();
+//int EDF();
 	// main scheduler object
 extern Parallelism SMARTS;
 

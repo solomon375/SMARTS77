@@ -62,6 +62,7 @@ void c( )
 void main( )
 {
 	clrscr();
+	//switch to EDF insted of roundRobin ?
 	SMARTS.externalFunctions(timerInterruptHandler, scheduler, myTaskEnd, roundRobin);
 	SMARTS.declareTask(a,'A',50,3);
 	SMARTS.declareTask(b,'B',70,4);
@@ -70,4 +71,7 @@ void main( )
 }
 
 
-
+//need to create redeclare() function to run the same tasks again without reloading the system
+//need to create EDF (probably in SchedAlgo77.CPP)
+//need to call/create it so the program will run both the algorithms and compare the results
+//maybe we need to change the algo manually in the code and run the program twice, once for each algo, and compare the results
