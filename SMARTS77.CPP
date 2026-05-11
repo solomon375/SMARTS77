@@ -6,6 +6,7 @@
 /* SMARTS77.CPP, SMARTS class body                              */
 /****************************************************************/
 #include "smarts77.h"
+#include "SMARTS77.H"
 
 /**********    Function     **********/
 unsigned getTimerClocks( )
@@ -411,4 +412,19 @@ void Task::setPeriod(int period)
 void Task::setCurrentPeriod(int currentPeriod)
 {
 	this->currentPeriod = currentPeriod;
+}
+
+void Task::redeclare(void far *code, void far *userTaskEnd, char name)
+{
+	//not the correct algo, it must to cahnge in the next period.
+	stack[MaxStack-5]=FP_OFF(code);
+	stack[MaxStack-4]=FP_SEG(code);
+	stack[MaxStack-3]=_FLAGS;
+	stack[MaxStack-2]=FP_OFF(userTaskEnd);
+	stack[MaxStack-1]=FP_SEG(userTaskEnd);
+	this->name= name;
+	this->period = period;
+	this->currentPeriod = this->currentPeriod;
+	this->times = times;
+	status = READY;
 }
