@@ -64,6 +64,13 @@ public:
 	void sleepDecr();
 	void incrPriority();
 	void setOriginalPriority();
+	int getTimes();                 // get the 'times' variable of the current task
+	int getPeriod();                // get the 'period' variable of the current task
+	int getCurrentPeriod();         // get the 'currentPeriod' variable of the current task
+	void setTimes(int times);             // set the 'times' variable of the current task
+	void setPeriod(int period);           // set the 'period' variable of the current task
+	void setCurrentPeriod(int currentPeriod); // set the 'currentPeriod' variable of the current task
+	void redeclare();
 
 };
 //                           Main class
@@ -114,12 +121,6 @@ public:
 	void resetProgInt();            // clear the 'program interrupt' flag
 	int getProgInt();               // get the 'program interrupt' flag status
 	void setEndOfTimeSlice();       // set the 'end of time slice' flag
-	int getTimes();                 // get the 'times' variable of the current task
-	int getPeriod();                // get the 'period' variable of the current task
-	int getCurrentPeriod();         // get the 'currentPeriod' variable of the current task
-	void setTimes(int times);             // set the 'times' variable of the current task
-	void setPeriod(int period);           // set the 'period' variable of the current task
-	void setCurrentPeriod(int currentPeriod); // set the 'currentPeriod' variable of the current task
 	char getName(int taskNum);
 	char getCurrentName();
 	taskStatus getStatus(int taskNum);
@@ -141,7 +142,6 @@ public:
 	void getSchedStack(unsigned &StackSeg, unsigned &StackPtr);
 	void handleTimers();
 	void taskEnd();
-	//void redeclare();
 };
 //=======================
 /**********    Functions    **********/
