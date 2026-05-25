@@ -48,6 +48,7 @@ class Task
 {
 public:
 	int times; 						// loop's times for the task
+	int timesLeft;					// how many times left to do the loop
 	int period;				        // how much time its take to do the loop
 	int currentPeriod;              // where we stand in the loop (i)
 	char name;                      // task name
@@ -152,7 +153,7 @@ void scheduler();
 void myTaskEnd();
 	// 'short term' scheduler algorithms 
 int roundRobin();
-//int EDF();
+int EDF();
 	// main scheduler object
 extern Parallelism SMARTS;
 

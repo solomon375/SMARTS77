@@ -22,3 +22,7 @@ int roundRobin( )
 	return nextTask;
 }
 
+int EDF( )
+{
+	
+}

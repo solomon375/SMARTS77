@@ -75,3 +75,6 @@ void main( )
 //need to create EDF (probably in SchedAlgo77.CPP)
 //need to call/create it so the program will run both the algorithms and compare the results
 //maybe we need to change the algo manually in the code and run the program twice, once for each algo, and compare the results
+
+// need to finish handleTimers (it will send to other files for example flags will send to extern)
+// need to finish the edf algo (return int for the id of the mission)

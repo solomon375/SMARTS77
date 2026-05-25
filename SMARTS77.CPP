@@ -323,7 +323,34 @@ void Parallelism::handleTimers()
 				--sleepTasks;
 		}
 	}
-
+	int allTaskComplete = 1; //flag to check if all tasks have completed their mission (timesLeft=0)
+	for(int i=0; i < totalTasks; ++i)
+	{
+		if(context[i].timesLeft>0)  // if the task is active in its loop
+		{
+			context[i].currentPeriod--;
+			if(context[i].currentPeriod==0)
+			{
+				if(context[i].status!=NOT_ACTIVE)
+				{
+					//what to do in deadline
+				}
+				context[i].timesLeft--;
+				if(context[i].timesLeft>0)
+				{
+					//redo the mission 
+				}
+			}
+		}
+		if(context[i].timesLeft>0)  // if the task is active in its loop
+		{
+			allTaskComplete = 0;
+		}
+	}
+	if(allTaskComplete&&totalTasks>0)
+	{
+		//rise a flag to finish the system
+	}
 }
 
 void Parallelism::taskEnd( )
@@ -363,6 +390,7 @@ void Task::declare(void far *code, void far *userTaskEnd, char name, int period,
 	this->period = period;
 	this->currentPeriod = period;
 	this->times = times;
+	this->timesLeft = times;
 	status = READY;
 }
 //----------------------------------------------------
