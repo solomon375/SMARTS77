@@ -92,7 +92,13 @@ private:
 	void interrupt ( *userIntAddress)(...);
 	void far *scheduler;    // a pointer to the scheduler
 	void far *userTaskEnd;      // a pointer to the function called at the end of each task
+	int deadline; 		 // indicates that a task has reached its deadline
+	int fininshAllTimes; // indicates that the task have finished their times loop
 public:
+    int getDeadline();
+	void setDeadline(int deadline);
+	int getFininshAllTimes();
+	void setFininshAllTimes(int fininshAllTimes);
 	int sleepTasks;         // indicates how many task is sleeping, and it can't be deadlock
 	int activeTasks;        // indicates how many task is activate 
 	int traceInd;           // debugging index

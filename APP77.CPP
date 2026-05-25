@@ -1,4 +1,4 @@
-`/********************************************************************/
+/********************************************************************/
 /* A Small Real Time System for the Real-Time laboratory            */
 /* built by: A.Teitelbaum on an idea of H.G.Mendelbaum              */
 /* Jerusalem College of Technology, 5759-64 (1999-03)               */
@@ -63,8 +63,8 @@ void main( )
 {
 	clrscr();
 	//switch to EDF insted of roundRobin ?
-	// SMARTS.externalFunctions(timerInterruptHandler, scheduler, myTaskEnd, roundRobin);
-	SMARTS.externalFunctions(timerInterruptHandler, scheduler, myTaskEnd, EDF);
+	SMARTS.externalFunctions(timerInterruptHandler, scheduler, myTaskEnd, roundRobin);
+	// SMARTS.externalFunctions(timerInterruptHandler, scheduler, myTaskEnd, EDF);
 	SMARTS.declareTask(a,'A',50,3);
 	SMARTS.declareTask(b,'B',70,4);
 	SMARTS.declareTask(c,'C',100,5);

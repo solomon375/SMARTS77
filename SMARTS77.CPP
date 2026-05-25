@@ -21,6 +21,22 @@ unsigned getTimerClocks( )
 	clocks += inportb(0x40)<<8;
 	return clocks;
 }
+int Parallelism::getDeadline()
+{
+    return deadline;
+}
+void Parallelism::setDeadline(int deadline)
+{
+    this->deadline = deadline;
+}
+int Parallelism::getFininshAllTimes()
+{
+    return fininshAllTimes;
+}
+void Parallelism::setFininshAllTimes(int fininshAllTimes)
+{
+    this->fininshAllTimes = fininshAllTimes;
+}
 ////////////////////////////////////////////////////
 /**********    class body:  Parallelism     **********/
 Parallelism::Parallelism()
@@ -89,9 +105,14 @@ void Parallelism::runTheTasks()
 			cprintf("\n\n\rExit : deadlock");
 			break;
 		}
-		if (activeTasks==0)
+		if (fininshAllTimes)
 		{
 			cprintf("\n\n\rExit : finish");
+			break;
+		}
+		if(deadline)
+		{
+			cprintf("\n\n\rExit : deadline");
 			break;
 		}
 	}
@@ -324,6 +345,7 @@ void Parallelism::handleTimers()
 				--sleepTasks;
 		}
 	}
+
 	int allTaskComplete = 1; //flag to check if all tasks have completed their mission (timesLeft=0)
 	for(int i=0; i < totalTasks; ++i)
 	{
@@ -334,12 +356,13 @@ void Parallelism::handleTimers()
 			{
 				if(context[i].status!=NOT_ACTIVE)
 				{
-					//what to do in deadline
+					setDeadline(1);
+					return;
 				}
 				context[i].timesLeft--;
 				if(context[i].timesLeft>0)
 				{
-					//redo the mission 
+					context[i].redeclare();
 				}
 			}
 		}
@@ -350,7 +373,9 @@ void Parallelism::handleTimers()
 	}
 	if(allTaskComplete&&totalTasks>0)
 	{
-		//rise a flag to finish the system
+		//rise a flag to finish the system	
+		setFininshAllTimes(1);
+		return;
 	}
 }
 
@@ -392,6 +417,10 @@ void Task::declare(void far *code, void far *userTaskEnd, char name, int period,
 	this->currentPeriod = period;
 	this->times = times;
 	this->timesLeft = times;
+	//copy stack = stack 
+	for (int i=MaxStack-1; i >= (MaxStack-14); i--)
+		{schedCopy[i]=stack[i];}
+
 	status = READY;
 }
 //----------------------------------------------------
@@ -442,17 +471,27 @@ void Task::setCurrentPeriod(int currentPeriod)
 	this->currentPeriod = currentPeriod;
 }
 
-void Task::redeclare(void far *code, void far *userTaskEnd, char name)
+void Task::redeclare()
 {
-	//not the correct algo, it must to cahnge in the next period.
+	stack[MaxStack-14]=_BP;
+	stack[MaxStack-13]=_DI;
+	stack[MaxStack-12]=_SI;
+	stack[MaxStack-11]=_DS;
+	stack[MaxStack-10]=_ES;
+	stack[MaxStack-9]=_DX;
+	stack[MaxStack-8]=_CX;
+	stack[MaxStack-7]=_BX;
+	stack[MaxStack-6]=_AX;
 	stack[MaxStack-5]=FP_OFF(code);
 	stack[MaxStack-4]=FP_SEG(code);
 	stack[MaxStack-3]=_FLAGS;
 	stack[MaxStack-2]=FP_OFF(userTaskEnd);
 	stack[MaxStack-1]=FP_SEG(userTaskEnd);
-	this->name= name;
-	this->period = period;
-	this->currentPeriod = this->currentPeriod;
-	this->times = times;
+	stackSeg=FP_SEG(&stack[MaxStack-14]);
+	stackPtr=FP_OFF(&stack[MaxStack-14]);
+	this->currentPeriod = this->period;
+	// currentPriority = priority;
+	// SMARTS.activeTasks++;
+	timesLeft--;
 	status = READY;
 }
