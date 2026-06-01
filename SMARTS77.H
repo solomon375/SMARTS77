@@ -71,6 +71,8 @@ public:
 	void setPeriod(int period);           // set the 'period' variable of the current task
 	void setCurrentPeriod(int currentPeriod); // set the 'currentPeriod' variable of the current task
 	void redeclare();
+	void far *code;         // a pointer to the current task code
+	void far *userTaskEnd;  // a pointer to the function called at the end of the task
 
 };
 //                           Main class
@@ -148,6 +150,7 @@ public:
 	void getSchedStack(unsigned &StackSeg, unsigned &StackPtr);
 	void handleTimers();
 	void taskEnd();
+	int getContextCurrentPeriod(int index);
 };
 //=======================
 /**********    Functions    **********/

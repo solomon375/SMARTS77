@@ -5,7 +5,6 @@
 /* update  Tishrey   5777                                       */
 /* SMARTS77.CPP, SMARTS class body                              */
 /****************************************************************/
-#include "smarts77.h"
 #include "SMARTS77.H"
 
 /**********    Function     **********/
@@ -36,6 +35,10 @@ int Parallelism::getFininshAllTimes()
 void Parallelism::setFininshAllTimes(int fininshAllTimes)
 {
     this->fininshAllTimes = fininshAllTimes;
+}
+int Parallelism::getContextCurrentPeriod(int index)
+{
+    return context[index].currentPeriod;
 }
 ////////////////////////////////////////////////////
 /**********    class body:  Parallelism     **********/
@@ -336,7 +339,8 @@ void Parallelism::getSchedStack(unsigned &StackSeg, unsigned &StackPtr)
 void Parallelism::handleTimers()
 	// handling of the sleep status mode
 {
-	for (int i=totalTasks-1; i >=0 ; --i) 
+	int i;
+	for (i=totalTasks-1; i >=0 ; --i) 
 	{	
 		if(getStatus(i)==SLEEP)
 		{
@@ -347,7 +351,7 @@ void Parallelism::handleTimers()
 	}
 
 	int allTaskComplete = 1; //flag to check if all tasks have completed their mission (timesLeft=0)
-	for(int i=0; i < totalTasks; ++i)
+	for(i=0; i < totalTasks; ++i)
 	{
 		if(context[i].timesLeft>0)  // if the task is active in its loop
 		{
@@ -417,10 +421,8 @@ void Task::declare(void far *code, void far *userTaskEnd, char name, int period,
 	this->currentPeriod = period;
 	this->times = times;
 	this->timesLeft = times;
-	//copy stack = stack 
-	for (int i=MaxStack-1; i >= (MaxStack-14); i--)
-		{schedCopy[i]=stack[i];}
-
+	this->code = code;
+	this->userTaskEnd = userTaskEnd;
 	status = READY;
 }
 //----------------------------------------------------
@@ -482,8 +484,8 @@ void Task::redeclare()
 	stack[MaxStack-8]=_CX;
 	stack[MaxStack-7]=_BX;
 	stack[MaxStack-6]=_AX;
-	stack[MaxStack-5]=FP_OFF(code);
-	stack[MaxStack-4]=FP_SEG(code);
+	stack[MaxStack-5]=FP_OFF(this->code);
+	stack[MaxStack-4]=FP_SEG(this->code);
 	stack[MaxStack-3]=_FLAGS;
 	stack[MaxStack-2]=FP_OFF(userTaskEnd);
 	stack[MaxStack-1]=FP_SEG(userTaskEnd);

@@ -13,9 +13,9 @@ void a( )
 	SMARTS.contextSwitchOff();
 	cout << "\n *************   A Start    *********************";
 	SMARTS.contextSwitchOn();
-	for (int j=0; j <500; j++)
+	for (int j=0; j <15; j++)
 	{
-		for (long i=0; i <600000; i++);
+		for (long i=0; i <200000; i++);
 		SMARTS.contextSwitchOff();
 		cout << "A";
 		SMARTS.contextSwitchOn();
@@ -30,9 +30,9 @@ void b( )
 	SMARTS.contextSwitchOff();
 	cout << "\n *************   B Start    *********************";
 	SMARTS.contextSwitchOn();
-	for (int j=0; j <500; j++)
+	for (int j=0; j <15; j++)
 	{
-		for (long i=0; i < 600000; i++);
+		for (long i=0; i < 200000; i++);
 		SMARTS.contextSwitchOff();
 		cout << "B";
 		SMARTS.contextSwitchOn();
@@ -47,9 +47,9 @@ void c( )
 	SMARTS.contextSwitchOff();
 	cout << "\n *************   C Start    *********************";
 	SMARTS.contextSwitchOn();
-	for (int j=0; j <500; j++)
+	for (int j=0; j <15; j++)
 	{
-		for (long i=0; i < 600000; i++);
+		for (long i=0; i < 200000; i++);
 		SMARTS.contextSwitchOff();
 		cout << "C";
 		SMARTS.contextSwitchOn();
@@ -71,12 +71,3 @@ void main( )
 	SMARTS.runTheTasks();
 }
 
-
-//need to call/create it so the program will run both the algorithms and compare the results
-//maybe we need to change the algo manually in the code and run the program twice, once for each algo, and compare the results
-
-//todo: fix redeclare function and the declare function
-//shlomo tinok :)
-
-// need to finish handleTimers (it will send to other files for example flags will send to extern)
-// need to finish the edf algo (return int for the id of the mission)

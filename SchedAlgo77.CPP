@@ -28,10 +28,10 @@ int EDF()
 	int nextTask = SMARTS.getTotalTasks( );
 	int minPeriod = MAXINT;
 	for (int i=0; i < SMARTS.getTotalTasks( ); ++i)
-		if (SMARTS.getStatus(i) == READY && SMARTS.context[i].currentPeriod < minPeriod)
+		if (SMARTS.getStatus(i) == READY && SMARTS.getContextCurrentPeriod(i) < minPeriod)
 		{
-			minPeriod = SMARTS.context[i].currentPeriod;
+			minPeriod = SMARTS.getContextCurrentPeriod(i);
 			nextTask = i;
 		}
-return nextTask;
+	return nextTask;
 }
