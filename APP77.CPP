@@ -13,7 +13,7 @@ void a( )
 	SMARTS.contextSwitchOff();
 	cout << "\n *************   A Start    *********************";
 	SMARTS.contextSwitchOn();
-	for (int j=0; j <15; j++)
+	for (int j=0; j <42; j++)
 	{
 		for (long i=0; i <200000; i++);
 		SMARTS.contextSwitchOff();
@@ -30,7 +30,7 @@ void b( )
 	SMARTS.contextSwitchOff();
 	cout << "\n *************   B Start    *********************";
 	SMARTS.contextSwitchOn();
-	for (int j=0; j <15; j++)
+	for (int j=0; j <23; j++)
 	{
 		for (long i=0; i < 200000; i++);
 		SMARTS.contextSwitchOff();
@@ -47,7 +47,7 @@ void c( )
 	SMARTS.contextSwitchOff();
 	cout << "\n *************   C Start    *********************";
 	SMARTS.contextSwitchOn();
-	for (int j=0; j <15; j++)
+	for (int j=0; j <23; j++)
 	{
 		for (long i=0; i < 200000; i++);
 		SMARTS.contextSwitchOff();
@@ -63,8 +63,8 @@ void main( )
 {
 	clrscr();
 	//switch to EDF insted of roundRobin ?
-	SMARTS.externalFunctions(timerInterruptHandler, scheduler, myTaskEnd, roundRobin);
-	// SMARTS.externalFunctions(timerInterruptHandler, scheduler, myTaskEnd, EDF);
+	// SMARTS.externalFunctions(timerInterruptHandler, scheduler, myTaskEnd, roundRobin);
+	SMARTS.externalFunctions(timerInterruptHandler, scheduler, myTaskEnd, EDF);
 	SMARTS.declareTask(a,'A',50,3);
 	SMARTS.declareTask(b,'B',70,4);
 	SMARTS.declareTask(c,'C',100,5);

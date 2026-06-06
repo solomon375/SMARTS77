@@ -20,6 +20,14 @@ unsigned getTimerClocks( )
 	clocks += inportb(0x40)<<8;
 	return clocks;
 }
+int Parallelism::getError()
+{
+    return this->error;
+}
+void Parallelism::setError()
+{
+	this->error = 1;
+}
 int Parallelism::getDeadline()
 {
     return deadline;
@@ -27,14 +35,6 @@ int Parallelism::getDeadline()
 void Parallelism::setDeadline(int deadline)
 {
     this->deadline = deadline;
-}
-int Parallelism::getFininshAllTimes()
-{
-    return fininshAllTimes;
-}
-void Parallelism::setFininshAllTimes(int fininshAllTimes)
-{
-    this->fininshAllTimes = fininshAllTimes;
 }
 int Parallelism::getContextCurrentPeriod(int index)
 {
@@ -108,14 +108,14 @@ void Parallelism::runTheTasks()
 			cprintf("\n\n\rExit : deadlock");
 			break;
 		}
-		if (fininshAllTimes)
+		if (fininshAllTimes())
 		{
 			cprintf("\n\n\rExit : finish");
 			break;
 		}
-		if(deadline)
+		if(error)
 		{
-			cprintf("\n\n\rExit : deadline");
+			cprintf("\n\n\rExit : error");
 			break;
 		}
 	}
@@ -125,6 +125,17 @@ void Parallelism::runTheTasks()
 	setvect(timerInt, getvect(userInt));	// restore original BIOS time handler
 	setvect(userInt, userIntAddress);	// restore original BIOS userInt
 	asm	sti;	// yes interrupts
+}
+int Parallelism::fininshAllTimes()
+{
+	for(int i=0; i < totalTasks; ++i)
+	{
+		if(context[i].timesLeft>0)  // if the task is active in its loop
+		{
+			return 0;
+		}
+	}
+	return 1;
 }
 
 void Parallelism::callScheduler( )
@@ -353,33 +364,50 @@ void Parallelism::handleTimers()
 	int allTaskComplete = 1; //flag to check if all tasks have completed their mission (timesLeft=0)
 	for(i=0; i < totalTasks; ++i)
 	{
-		if(context[i].timesLeft>0)  // if the task is active in its loop
+		context[i].currentPeriod--;
+		if (context[i].currentPeriod==0)
 		{
-			context[i].currentPeriod--;
-			if(context[i].currentPeriod==0)
+			if(context[i].timesLeft>0)  // if the task is active in its loop
 			{
 				if(context[i].status!=NOT_ACTIVE)
 				{
-					setDeadline(1);
-					return;
+					setError(); // set error flag
+					cprintf("\n\n\rTimesLeft error");
 				}
-				context[i].timesLeft--;
-				if(context[i].timesLeft>0)
+				else
 				{
 					context[i].redeclare();
 				}
 			}
 		}
-		if(context[i].timesLeft>0)  // if the task is active in its loop
-		{
-			allTaskComplete = 0;
-		}
-	}
-	if(allTaskComplete&&totalTasks>0)
-	{
-		//rise a flag to finish the system	
-		setFininshAllTimes(1);
-		return;
+
+	// 	if(context[i].timesLeft>0)  // if the task is active in its loop
+	// 	{
+			// context[i].currentPeriod--;
+	// 		if(context[i].currentPeriod==0)
+	// 		{
+	// 			if(context[i].status!=NOT_ACTIVE)
+	// 			{
+	// 				setDeadline(1);
+	// 				return;
+	// 			}
+	// 			context[i].timesLeft--;
+	// 			if(context[i].timesLeft>0)
+	// 			{
+	// 				context[i].redeclare();
+	// 			}
+	// 		}
+	// 	}
+	// 	if(context[i].timesLeft>0)  // if the task is active in its loop
+	// 	{
+	// 		allTaskComplete = 0;
+	// 	}
+	// }
+	// if(allTaskComplete&&totalTasks>0)
+	// {
+	// 	//rise a flag to finish the system	
+	// 	setFininshAllTimes(1);
+	// 	return;
 	}
 }
 
