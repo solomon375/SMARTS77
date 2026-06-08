@@ -13,7 +13,7 @@ void a( )
 	SMARTS.contextSwitchOff();
 	cout << "\n *************   A Start    *********************";
 	SMARTS.contextSwitchOn();
-	for (int j=0; j <42; j++)
+	for (int j=0; j <30; j++)
 	{
 		for (long i=0; i <200000; i++);
 		SMARTS.contextSwitchOff();
