@@ -6,7 +6,7 @@
 /****************************************************************/
 
 
-#include "smarts77.h"
+#include "SMARTS77.H"
 
 int roundRobin( )
 // Round Robin short-term algorithm 
@@ -34,4 +34,17 @@ int EDF()
 			nextTask = i;
 		}
 	return nextTask;
+}
+
+int RMS()
+{
+	int minPriority = MAXINT;
+	int nextTask = SMARTS.getTotalTasks( );
+	for (int i=0; i < SMARTS.getTotalTasks( ); ++i)
+		if (SMARTS.getStatus(i) == READY && SMARTS.getCurrentPriority(i) < minPriority)
+		{
+			minPriority = SMARTS.getCurrentPriority(i);
+			nextTask = i;
+		}
+    return nextTask;
 }

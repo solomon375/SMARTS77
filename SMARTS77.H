@@ -152,6 +152,8 @@ public:
 	void handleTimers();
 	void taskEnd();
 	int getContextCurrentPeriod(int index);
+	int getPriority(int index);
+	int getCurrentPriority(int index);
 	
 };
 //=======================
@@ -165,6 +167,7 @@ void myTaskEnd();
 	// 'short term' scheduler algorithms 
 int roundRobin();
 int EDF();
+int RMS();
 	// main scheduler object
 extern Parallelism SMARTS;
 

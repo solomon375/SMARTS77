@@ -40,6 +40,14 @@ int Parallelism::getContextCurrentPeriod(int index)
 {
     return context[index].currentPeriod;
 }
+int Parallelism::getPriority(int index)
+{
+    return context[index].priority;
+}
+int Parallelism::getCurrentPriority(int index)
+{
+    return context[index].currentPriority;
+}
 ////////////////////////////////////////////////////
 /**********    class body:  Parallelism     **********/
 Parallelism::Parallelism()
@@ -451,6 +459,7 @@ void Task::declare(void far *code, void far *userTaskEnd, char name, int period,
 	this->timesLeft = times;
 	this->code = code;
 	this->userTaskEnd = userTaskEnd;
+	currentPriority=priority=period;
 	status = READY;
 }
 //----------------------------------------------------
