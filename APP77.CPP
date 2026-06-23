@@ -7,56 +7,59 @@
 /********************************************************************/
 #include "smarts77.h"
 
+// mutex for protecting cout
+Mutex outputMutex;
+
 // user Functions
 void a( )
 {
-	SMARTS.contextSwitchOff();
+	outputMutex.acquire();
 	cout << "\n *************   A Start    *********************";
-	SMARTS.contextSwitchOn();
+	outputMutex.release();
 	for (int j=0; j <30; j++)
 	{
 		for (long i=0; i <200000; i++);
-		SMARTS.contextSwitchOff();
+		outputMutex.acquire();
 		cout << "A";
-		SMARTS.contextSwitchOn();
+		outputMutex.release();
 	}
-	SMARTS.contextSwitchOff();
+	outputMutex.acquire();
 	cout << "\n *************   A Finish   *********************";
-	SMARTS.contextSwitchOn();
+	outputMutex.release();
 }
 
 void b( )
 {
-	SMARTS.contextSwitchOff();
+	outputMutex.acquire();
 	cout << "\n *************   B Start    *********************";
-	SMARTS.contextSwitchOn();
+	outputMutex.release();
 	for (int j=0; j <23; j++)
 	{
 		for (long i=0; i < 200000; i++);
-		SMARTS.contextSwitchOff();
+		outputMutex.acquire();
 		cout << "B";
-		SMARTS.contextSwitchOn();
+		outputMutex.release();
 	}
-	SMARTS.contextSwitchOff();
+	outputMutex.acquire();
 	cout << "\n *************   B Finish   *********************";
-	SMARTS.contextSwitchOn();
+	outputMutex.release();
 }
 
 void c( )
 {
-	SMARTS.contextSwitchOff();
+	outputMutex.acquire();
 	cout << "\n *************   C Start    *********************";
-	SMARTS.contextSwitchOn();
+	outputMutex.release();
 	for (int j=0; j <23; j++)
 	{
 		for (long i=0; i < 200000; i++);
-		SMARTS.contextSwitchOff();
+		outputMutex.acquire();
 		cout << "C";
-		SMARTS.contextSwitchOn();
+		outputMutex.release();
 	}
-	SMARTS.contextSwitchOff();
+	outputMutex.acquire();
 	cout << "\n *************   C Finish   *********************";
-	SMARTS.contextSwitchOn();
+	outputMutex.release();
 }
 
 void main( )
