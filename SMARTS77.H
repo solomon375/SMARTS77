@@ -22,6 +22,32 @@
 enum taskStatus {READY, NOT_ACTIVE, SUSPENDED, SLEEP, UNDEFINED};
 
 /**********    Classes    **********/
+class PriorityQueue
+{
+	private:
+		int items[MaxTask];
+		int count;
+	public:
+		PriorityQueue();
+		void insert(int index);
+		int remove();
+		int isEmpty();
+		int isFull();
+};
+
+class Mutex
+{
+private:
+	PriorityQueue queue;
+	int Owner; // the task that owns the mutex
+	int level; // the number of times the mutex has been acquired by the owner
+	int s;     // the state of the mutex (1 = available, 0 = unavailable
+public:
+	Mutex();
+	void acquire();
+	void release();
+};
+
 class Event
 {
 private:
@@ -72,6 +98,7 @@ public:
 	void setCurrentPeriod(int currentPeriod); // set the 'currentPeriod' variable of the current task
 	void redeclare();
 	void far *code;         // a pointer to the current task code
+	int contextSwitchFlag;  // enables/disables context switch
 	void far *userTaskEnd;  // a pointer to the function called at the end of the task
 
 };
@@ -86,7 +113,7 @@ private:
 	int currentTask;        // time slice holding task
 	int deadlock;           // deadlock flag
 	int progInt;            // 'program interrupt' flag
-	int contextSwitchFlag;  // enables/disables context switch
+	// int contextSwitchFlag;  // enables/disables context switch
 	int endOfTimeSlice;     // indicates that has to be a context switch as soon as possible
 		// a pointer to the new timer interrupt handler
 	void interrupt ( *timerInterruptHandler)(...);

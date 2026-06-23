@@ -57,7 +57,7 @@ Parallelism::Parallelism()
 	activeTasks = 0;
 	totalTasks  = 0;
 	deadlock    = false;
-	contextSwitchFlag = true;
+	// contextSwitchFlag = true;
 	endOfTimeSlice = true;
 }
 
@@ -194,23 +194,23 @@ int Parallelism::contextSwitchOn( )
 	if (endOfTimeSlice) //is current time slice finished ?
 	{	
 		endOfTimeSlice = false;
-		contextSwitchFlag = true;
+		context[currentTask].contextSwitchFlag = true;
 		callScheduler();	// return control to the scheduler
 		return 1;
 	}
-	contextSwitchFlag = true;
+	context[currentTask].contextSwitchFlag = true;
 	return 0;
 }
 
 void Parallelism::contextSwitchOff( )
 				// Disable context switch
 {	
-	contextSwitchFlag = false;
+	context[currentTask].contextSwitchFlag = false;
 }
 
 int Parallelism::getContextSwitch( )
 {	
-	return contextSwitchFlag;
+	return context[currentTask].contextSwitchFlag;
 }
 
 void Parallelism::setProgInt( )
@@ -443,6 +443,7 @@ Task::Task()
 	status = NOT_ACTIVE;
 	sleepCount = 0;
 	currentPriority=priority=0;
+	contextSwitchFlag = true;
 }
 //-----------------------------------------------------
 void Task::declare(void far *code, void far *userTaskEnd, char name, int period, int times)
@@ -533,4 +534,91 @@ void Task::redeclare()
 	// SMARTS.activeTasks++;
 	timesLeft--;
 	status = READY;
+}
+
+/**********    class body:  PriorityQueue     **********/
+PriorityQueue::PriorityQueue()
+{
+	count = 0;
+	for (int i = 0; i < MaxTask; i++)
+		items[i] = -1;
+}
+
+void PriorityQueue::insert(int index)
+{
+	if (count < MaxTask && index >= 0 && index < MaxTask)
+	{
+		int i = count;
+		while (i > 0 && SMARTS.getCurrentPriority(items[i-1]) > SMARTS.getCurrentPriority(index))
+		{
+			items[i] = items[i-1];
+			i--;
+		}
+		items[i] = index;
+		count++;
+	}
+}
+
+int PriorityQueue::remove()
+{
+	if (count <= 0)
+		return -1;
+
+	int removed = items[0];
+	for (int i = 0; i < count - 1; ++i)
+		items[i] = items[i + 1];
+	items[count - 1] = -1;
+	count--;
+	return removed;
+}
+
+int PriorityQueue::isEmpty()
+{
+	return (count == 0);
+}
+
+int PriorityQueue::isFull()
+{
+	return (count >= MaxTask);
+}
+
+Mutex::Mutex()
+{
+	Owner = -1;
+	level = 0;
+	s = 1; // mutex is available
+}
+
+void Mutex::acquire()
+{
+	SMARTS.contextSwitchOff();
+	int currentTask = SMARTS.getCurrentTask();
+	if (s == 1 || Owner == currentTask) 
+		s = 0; 
+	else {
+		queue.insert(currentTask);
+		SMARTS.suspended();
+	}
+	Owner = currentTask;
+	level++;
+	SMARTS.contextSwitchOn();
+}
+void Mutex::release()
+{
+	SMARTS.contextSwitchOff();
+	int task = -1;
+	int currentTask = SMARTS.getCurrentTask();
+	if (Owner == currentTask)
+  		if (--level)
+   			return;
+  		else {
+   			Owner = -1;
+ 			if (0 == queue.isEmpty()) {
+   				task = queue.remove();
+   				SMARTS.resume(task);
+  			}
+  			else
+   				s = 1;
+ 		}
+	SMARTS.contextSwitchOn();
 }
